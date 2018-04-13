@@ -1,26 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace SdTech.FtpUploader.FtpUpload
 {
     public class FtpDestiny
     {
 
-        private string pEndereco;
+        private string _pEndereco;
         public string PEndereco
         {
-            get { return pEndereco; }
+            get => _pEndereco;
             set
             {
                 // TODO Test if already have a ftp
                 if (string.IsNullOrWhiteSpace(value)) throw new Exception("empty uri");
                 value = SanitizeEndereco(value);
                 if (!Uri.IsWellFormedUriString(value, UriKind.RelativeOrAbsolute)) throw new UriFormatException();
-                pEndereco = value;
+                _pEndereco = value;
             }
         }
 
@@ -28,40 +24,49 @@ namespace SdTech.FtpUploader.FtpUpload
         {
             end = end.TrimEnd('/');
             end = Regex.Replace(end, "^(https|http)", "ftp");
-            if (!Regex.Match(end, "^(ftp)://.*$").Success) return $"ftp://{end}";
-            return end;
-
+            return !Regex.Match(end, "^(ftp)://.*$").Success ? $"ftp://{end}" : end;
         }
 
-        private string pUsuario;
+        private string _pUsuario;
         public string PUsuario
         {
-            get { return pUsuario; }
+            get => _pUsuario;
             set
             {
-                if (!string.IsNullOrWhiteSpace(value)) pUsuario = value;
+                if (!string.IsNullOrWhiteSpace(value)) _pUsuario = value;
                 else throw new Exception("empty user");
 
             }
         }
-        private string pSenha;
+        private string _pSenha;
         public string PSenha
         {
-            get { return pSenha; }
+            get => _pSenha;
             set
             {
-                if (!string.IsNullOrWhiteSpace(value)) pSenha = value;
+                if (!string.IsNullOrWhiteSpace(value)) _pSenha = value;
                 else throw new Exception("empty password");
             }
         }
 
-        private string pEnviar;
-        public string PEnviar
+        private string _rLocal;
+        public string RLocal
         {
-            get { return pEnviar; }
+            get => _rLocal;
             set
             {
-                if (!string.IsNullOrWhiteSpace(value)) pEnviar = value;
+                if (!string.IsNullOrWhiteSpace(value)) _rLocal = value;
+                else throw new Exception("empty RLocal");
+            }
+        }
+
+        private string _pEnviar;
+        public string PEnviar
+        {
+            get => _pEnviar;
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value)) _pEnviar = value;
                 else throw new Exception("empty pEnviar");
             }
         }
