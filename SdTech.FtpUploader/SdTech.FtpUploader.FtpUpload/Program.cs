@@ -3,8 +3,7 @@ using System.IO;
 using System.Net;
 using static System.Text.Encoding;
 using System.Reflection;
-using System.Text.RegularExpressions;
-
+using static System.Console;
 namespace SdTech.FtpUploader.FtpUpload
 {
     class Program
@@ -23,9 +22,11 @@ namespace SdTech.FtpUploader.FtpUpload
                 };
 
 
-                Console.WriteLine(ftpParams);
+                WriteLine(ftpParams);
 
-                var remoteFile = $@"{ftpParams.PEndereco}/{ftpParams.RLocal}{ftpParams.PEnviar.Substring(ftpParams.PEnviar.LastIndexOf(@"\") + 1)}";
+                // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
+                var arquivo = ftpParams.PEnviar.Substring(ftpParams.PEnviar.LastIndexOf(@"\") + 1);
+                var remoteFile = $@"{ftpParams.PEndereco}/{ftpParams.RLocal}{arquivo}";
 
                 var request = (FtpWebRequest)WebRequest.Create(remoteFile);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
@@ -34,20 +35,19 @@ namespace SdTech.FtpUploader.FtpUpload
                 request.UsePassive = true;
                 request.KeepAlive = true;
                 request.EnableSsl = true;
+                
+                var fileContent = File.ReadAllBytes(ftpParams.PEnviar);
 
-                byte[] fileContent = null;
-                using (var strReader = new StreamReader(ftpParams.PEnviar))
-                {
-                    fileContent = UTF8.GetBytes(strReader.ReadToEnd());
-                }
                 request.ContentLength = fileContent.Length;
 
                 using (var requestStream = request.GetRequestStream())
                 {
                     requestStream.Write(fileContent, 0, fileContent.Length);
                 }
+
                 var response = (FtpWebResponse)request.GetResponse();
-                
+
+                WriteLine($"Arquivo \"{arquivo}\" enviado com sucesso.\nServer last message: \n{response.StatusDescription}\n");
             }
 
             catch (UriFormatException uriExcepion)
@@ -73,7 +73,7 @@ namespace SdTech.FtpUploader.FtpUpload
             if (!Directory.Exists(fullPath))
                 Directory.CreateDirectory(fullPath);
 
-            var filePath = $@"{fullPath}\FtpUpload-{DateTime.Now.ToString("yyyyMdd-HHm")}.txt";
+            var filePath = $@"{fullPath}\FtpUpload-{DateTime.Now:yyyyMdd-HHm}.txt";
 
             using (var sw = new StreamWriter(@filePath))
             {

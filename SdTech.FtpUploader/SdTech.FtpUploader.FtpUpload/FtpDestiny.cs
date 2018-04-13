@@ -71,6 +71,6 @@ namespace SdTech.FtpUploader.FtpUpload
             }
         }
 
-        public override string ToString() => $"End: {PEndereco}\nUsuario: {PUsuario}\nSenha: {PSenha}\nEnviar: {PEnviar}";
+        public override string ToString() => $"End: {PEndereco} \nRemoto: {RLocal} \nUsuario: {PUsuario}\nEnviar: {PEnviar}";
     }
 }
