@@ -55,8 +55,8 @@ namespace SdTech.FtpUploader.FtpUpload
             get => _rLocal;
             set
             {
-                if (!string.IsNullOrWhiteSpace(value)) _rLocal = value;
-                else throw new Exception("empty RLocal");
+                if (!string.IsNullOrWhiteSpace(value)) _rLocal = $"%2F/{value.Replace("/", "%2F/")}/";
+                else _rLocal = string.Empty;
             }
         }
 

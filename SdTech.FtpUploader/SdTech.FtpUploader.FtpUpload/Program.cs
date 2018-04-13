@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using static System.Text.Encoding;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace SdTech.FtpUploader.FtpUpload
 {
@@ -17,12 +18,14 @@ namespace SdTech.FtpUploader.FtpUpload
                     PEndereco = args[0],
                     PUsuario = args[1],
                     PSenha = args[2],
-                    PEnviar = args[3]
+                    PEnviar = args[3],
+                    RLocal = args[4]
                 };
+
 
                 Console.WriteLine(ftpParams);
 
-                var remoteFile = $@"{ftpParams.PEndereco}/{ftpParams.PEnviar.Substring(ftpParams.PEnviar.LastIndexOf(@"\") + 1)}";
+                var remoteFile = $@"{ftpParams.PEndereco}/{ftpParams.RLocal}{ftpParams.PEnviar.Substring(ftpParams.PEnviar.LastIndexOf(@"\") + 1)}";
 
                 var request = (FtpWebRequest)WebRequest.Create(remoteFile);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
@@ -30,6 +33,7 @@ namespace SdTech.FtpUploader.FtpUpload
                 request.UseBinary = true;
                 request.UsePassive = true;
                 request.KeepAlive = true;
+                request.EnableSsl = true;
 
                 byte[] fileContent = null;
                 using (var strReader = new StreamReader(ftpParams.PEnviar))
